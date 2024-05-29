@@ -10,5 +10,6 @@
   "initialize_git_repo": "yes",
   "repo_name": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
   "create_github_repo": "yes",
-  "default_branch": "main"
+  "default_branch": "main",
+  "initial_commit_message": "Initial commit"
 }

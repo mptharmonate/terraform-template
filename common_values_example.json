@@ -1,0 +1,8 @@
+{
+  "project_name": "my-project",
+  "environment": "development",
+  "region": "us-east-1",
+  "jira_ticket": "NFI-xxxx",
+  "bucket_name": "remote-state-bucket",
+  "dynamodb_table": "remote-tf-state-locks-table-name"
+}

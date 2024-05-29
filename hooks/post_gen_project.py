@@ -1,10 +1,10 @@
 import os
 import subprocess
 
-def init_git():
+def init_git(initial_commit_message):
     subprocess.run(['git', 'init'], check=True)
     subprocess.run(['git', 'add', '.'], check=True)
-    subprocess.run(['git', 'commit', '-m', 'Initial commit'], check=True)
+    subprocess.run(['git', 'commit', '-m', initial_commit_message], check=True)
 
 def create_github_repo_function(repo_name):
     org_name = 'harmonate'
@@ -19,8 +19,9 @@ def create_github_repo_function(repo_name):
 
 # Check if git initialization is desired
 initialize_git_repo = '{{ cookiecutter.initialize_git_repo }}'.lower()
+initial_commit_message = '{{ cookiecutter.initial_commit_message }}'
 if initialize_git_repo in ['yes', 'y']:
-    init_git()
+    init_git(initial_commit_message)
 
 # Check if GitHub repository creation is desired
 create_repo = '{{ cookiecutter.create_github_repo }}'.lower()
