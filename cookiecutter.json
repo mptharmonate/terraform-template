@@ -1,0 +1,14 @@
+{
+  "project_name": "example_project",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "region": "us-east-1",
+  "bucket_name": "your-terraform-state-bucket",
+  "dynamodb_table": "your-lock-table",
+  "jira_ticket": "NFI-xxxx",
+  "environment": "development",
+  "test_email": "your-email",
+  "initialize_git_repo": "yes",
+  "repo_name": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "create_github_repo": "yes",
+  "default_branch": "main"
+}
