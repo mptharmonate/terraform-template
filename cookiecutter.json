@@ -11,5 +11,6 @@
   "repo_name": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
   "create_github_repo": "yes",
   "default_branch": "main",
-  "initial_commit_message": "Initial commit"
+  "initial_commit_message": "Initial commit",
+  "terraform_version": "1.8.4"
 }

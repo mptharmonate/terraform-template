@@ -49,6 +49,11 @@ DEFAULT_INITIAL_COMMIT_MESSAGE="Initial commit"
 read -p "Enter initial commit message [$DEFAULT_INITIAL_COMMIT_MESSAGE]: " INITIAL_COMMIT_MESSAGE
 INITIAL_COMMIT_MESSAGE=${INITIAL_COMMIT_MESSAGE:-$DEFAULT_INITIAL_COMMIT_MESSAGE}
 
+# Prompt for Terraform Version
+DEFAULT_TERRAFORM_VERSION="1.8.4"
+read -p "Enter Terraform Version [$DEFAULT_TERRAFORM_VERSION]: " TERRAFORM_VERSION
+TERRAFORM_VERSION=${TERRAFORM_VERSION:-$DEFAULT_TERRAFORM_VERSION}
+
 # Define the template directory and the target output directory
 TEMPLATE_DIR="/Users/mpt/work/code/terraform-template"
 
@@ -63,4 +68,5 @@ cookiecutter $TEMPLATE_DIR --no-input \
     -f test_email=$TEST_EMAIL \
     -f initialize_git_repo=$INITIALIZE_GIT_REPO \
     -f create_github_repo=$CREATE_GITHUB_REPO \
-    -f initial_commit_message="$INITIAL_COMMIT_MESSAGE"
+    -f initial_commit_message="$INITIAL_COMMIT_MESSAGE" \
+    -f terraform_version=$TERRAFORM_VERSION

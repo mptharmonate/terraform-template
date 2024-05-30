@@ -7,15 +7,15 @@ on:
   workflow_dispatch:
 
 env:
-  AWS_REGION: {{ cookiecutter.region }}
-  TERRAFORM_VERSION: 1.8.4
+  AWS_REGION: { { cookiecutter.region } }
+  TERRAFORM_VERSION: { { cookiecutter.terraform_version } }
   WORKING_DIRECTORY: .
 
 jobs:
   plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
-    environment: {{ cookiecutter.environment }}
+    environment: { { cookiecutter.environment } }
 
     permissions:
       id-token: write
@@ -56,7 +56,7 @@ jobs:
     name: Terraform Apply
     runs-on: ubuntu-latest
     needs: plan
-    environment: {{ cookiecutter.environment }}
+    environment: { { cookiecutter.environment } }
 
     permissions:
       id-token: write
