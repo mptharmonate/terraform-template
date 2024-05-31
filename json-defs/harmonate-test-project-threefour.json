@@ -1,0 +1,8 @@
+{
+  "bucket_name": "harmonate-test-project-threefour-us-west-2-tf-state",
+  "dynamodb_table": "harmonate-test-project-threefour-us-west-2-tf-state-locks",
+  "environment": "development",
+  "jira_ticket": "NFI-xxxx",
+  "project_name": "harmonate-test-project-threefour",
+  "region": "us-west-2"
+}
