@@ -67,6 +67,7 @@ OUTPUT_DIR="/Users/mpt/work/code"
 # Run Cookiecutter with pre-defined values
 /Users/mpt/.local/bin/cookiecutter $TEMPLATE_DIR --no-input \
     -f project_name=$PROJECT_NAME \
+    -f project_slug=$PROJECT_NAME \
     -f region=$REGION \
     -f bucket_name=$BUCKET_NAME \
     -f dynamodb_table=$DYNAMODB_TABLE \
@@ -75,6 +76,7 @@ OUTPUT_DIR="/Users/mpt/work/code"
     -f test_email=$TEST_EMAIL \
     -f initialize_git_repo=$INITIALIZE_GIT_REPO \
     -f create_github_repo=$CREATE_GITHUB_REPO \
+    -f repo_name=$PROJECT_NAME \
     -f initial_commit_message="$INITIAL_COMMIT_MESSAGE" \
     -f terraform_version=$TERRAFORM_VERSION \
     -o $OUTPUT_DIR
