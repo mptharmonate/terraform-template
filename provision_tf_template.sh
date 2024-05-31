@@ -65,7 +65,7 @@ TEMPLATE_DIR="/Users/mpt/work/code/terraform-template"
 OUTPUT_DIR="/Users/mpt/work/code"
 
 # Run Cookiecutter with pre-defined values
-cookiecutter $TEMPLATE_DIR --no-input \
+/Users/mpt/.local/bin/cookiecutter $TEMPLATE_DIR --no-input \
     -f project_name=$PROJECT_NAME \
     -f region=$REGION \
     -f bucket_name=$BUCKET_NAME \
