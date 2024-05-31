@@ -6,28 +6,34 @@ if ! command -v jq &> /dev/null; then
     exit 1
 fi
 
+# Ensure cookiecutter is installed
+if ! command -v cookiecutter &> /dev/null; then
+    echo "cookiecutter is required but not installed. Please install cookiecutter and try again."
+    exit 1
+fi
+
 # Check if the argument is provided
 if [ $# -eq 0 ]; then
-    echo "Usage: $0 path_to_common_values.json"
+    echo "Usage: $0 json-defs/backend-project-name.json"
     exit 1
 fi
 
 # Assign the first argument to the variable
-COMMON_VALUES_FILE=$1
+BACKEND_PROJECT_DEF_FILE=$1
 
 # Check if the provided common_values.json exists
-if [ ! -f "$COMMON_VALUES_FILE" ]; then
-    echo "$COMMON_VALUES_FILE not found!"
+if [ ! -f "$BACKEND_PROJECT_DEF_FILE" ]; then
+    echo "$BACKEND_PROJECT_DEF_FILE not found!"
     exit 1
 fi
 
 # Load values from the provided common_values.json
-PROJECT_NAME=$(jq -r .project_name "$COMMON_VALUES_FILE")
-REGION=$(jq -r .region "$COMMON_VALUES_FILE")
-BUCKET_NAME=$(jq -r .bucket_name "$COMMON_VALUES_FILE")
-DYNAMODB_TABLE=$(jq -r .dynamodb_table "$COMMON_VALUES_FILE")
-JIRA_TICKET=$(jq -r .jira_ticket "$COMMON_VALUES_FILE")
-ENVIRONMENT=$(jq -r .environment "$COMMON_VALUES_FILE")
+PROJECT_NAME=$(jq -r .project_name "$BACKEND_PROJECT_DEF_FILE")
+REGION=$(jq -r .region "$BACKEND_PROJECT_DEF_FILE")
+BUCKET_NAME=$(jq -r .bucket_name "$BACKEND_PROJECT_DEF_FILE")
+DYNAMODB_TABLE=$(jq -r .dynamodb_table "$BACKEND_PROJECT_DEF_FILE")
+JIRA_TICKET=$(jq -r .jira_ticket "$BACKEND_PROJECT_DEF_FILE")
+ENVIRONMENT=$(jq -r .environment "$BACKEND_PROJECT_DEF_FILE")
 
 # Prompt for test_email with default value
 DEFAULT_TEST_EMAIL="mtuszynski+tester@harmonate.com"
@@ -72,3 +78,9 @@ cookiecutter $TEMPLATE_DIR --no-input \
     -f initial_commit_message="$INITIAL_COMMIT_MESSAGE" \
     -f terraform_version=$TERRAFORM_VERSION \
     -o $OUTPUT_DIR
+
+# Change to the project directory
+cd $OUTPUT_DIR/$PROJECT_NAME
+
+# Intialize Terraform with the remote backend
+terraform init

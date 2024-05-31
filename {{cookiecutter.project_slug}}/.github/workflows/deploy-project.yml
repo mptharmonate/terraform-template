@@ -92,11 +92,6 @@ jobs:
         working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
         run: terraform apply ./tfplan
 
-      - name: Install AWS CLI and jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli jq
-
       - name: Get Terraform outputs
         working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
         id: tf_outputs
