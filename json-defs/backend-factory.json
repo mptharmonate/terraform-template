@@ -1,0 +1,8 @@
+{
+  "bucket_name": "harmonate-tf-state-backend-factory-us-east-1-tf-state",
+  "dynamodb_table": "harmonate-tf-state-backend-factory-us-east-1-tf-state-locks",
+  "environment": "development",
+  "jira_ticket": "NFI-ADMIN-0001",
+  "project_name": "harmonate-tf-state-backend-factory",
+  "region": "us-east-1"
+}

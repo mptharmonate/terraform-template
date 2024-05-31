@@ -56,6 +56,7 @@ TERRAFORM_VERSION=${TERRAFORM_VERSION:-$DEFAULT_TERRAFORM_VERSION}
 
 # Define the template directory and the target output directory
 TEMPLATE_DIR="/Users/mpt/work/code/terraform-template"
+OUTPUT_DIR="/Users/mpt/work/code"
 
 # Run Cookiecutter with pre-defined values
 cookiecutter $TEMPLATE_DIR --no-input \
@@ -69,4 +70,5 @@ cookiecutter $TEMPLATE_DIR --no-input \
     -f initialize_git_repo=$INITIALIZE_GIT_REPO \
     -f create_github_repo=$CREATE_GITHUB_REPO \
     -f initial_commit_message="$INITIAL_COMMIT_MESSAGE" \
-    -f terraform_version=$TERRAFORM_VERSION
+    -f terraform_version=$TERRAFORM_VERSION \
+    -o $OUTPUT_DIR

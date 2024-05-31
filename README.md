@@ -1,3 +1,8 @@
+# Examples
+
+## JSON defintion file
+
+```json
 {
   "project_name": "my-project",
   "environment": "development",
@@ -6,3 +11,8 @@
   "bucket_name": "remote-state-bucket",
   "dynamodb_table": "remote-tf-state-locks-table-name"
 }
+```
+
+## Usage
+
+`./provison_tf_template.sh json-defs/file-created-from-backend-factory.json`
