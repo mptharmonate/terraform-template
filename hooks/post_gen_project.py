@@ -10,7 +10,7 @@ def create_github_repo_function(repo_name):
     org_name = 'harmonate'
     print (f'Creating GitHub repository {org_name}/{repo_name}')
     #Create the repository on GitHub within the organization using the gh CLI
-    subprocess.run(['gh', 'repo', 'create', f'{org_name}/{repo_name}', '--private', '--source=.', '--remote=origin'], check=True)
+    subprocess.run(['gh', 'repo', 'create', f'{org_name}/{repo_name}', '--internal', '--source=.', '--remote=origin'], check=True)
     # Update the remote URL to use the git@github.work alias
     remote_url = f'git@github.work:{org_name}/{repo_name}.git'
     subprocess.run(['git', 'remote', 'set-url', 'origin', remote_url], check=True)
