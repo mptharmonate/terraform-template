@@ -86,3 +86,6 @@ cd $OUTPUT_DIR/$PROJECT_NAME
 
 # Intialize Terraform with the remote backend
 terraform init
+
+# Initial Terraform Workspace by environment
+terraform workspace new $ENVIRONMENT
