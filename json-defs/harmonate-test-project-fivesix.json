@@ -1,8 +1,0 @@
-{
-  "bucket_name": "harmonate-test-project-fivesix-us-east-1-tf-state",
-  "dynamodb_table": "harmonate-test-project-fivesix-us-east-1-tf-state-locks",
-  "environment": "development",
-  "jira_ticket": "NFI-xxxx",
-  "project_name": "harmonate-test-project-fivesix",
-  "region": "us-east-1"
-}
