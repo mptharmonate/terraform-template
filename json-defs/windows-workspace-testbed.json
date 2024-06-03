@@ -1,0 +1,8 @@
+{
+  "bucket_name": "harmonate-tf-state-windows-workspace-testbed",
+  "dynamodb_table": "harmonate-tf-state-locks-windows-workspace-testbed",
+  "environment": "production",
+  "jira_ticket": "NFI-3369",
+  "project_name": "windows-workspace-testbed",
+  "region": "us-west-2"
+}
