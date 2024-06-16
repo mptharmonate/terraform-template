@@ -11,6 +11,7 @@ env:
   TERRAFORM_VERSION: {{ cookiecutter.terraform_version }}
   WORKING_DIRECTORY: .
   TF_VAR_environment: {{ cookiecutter.environment }}
+  TF_VAR_project_name: {{ cookiecutter.project_name }}
   ROLE_TO_ASSUME: ${{ '{{' }} secrets.SANDBOX_AWS_ROLE_TO_ASSUME {{ '}}' }}
   PROJECT_NAME: {{ cookiecutter.project_name }}
 
