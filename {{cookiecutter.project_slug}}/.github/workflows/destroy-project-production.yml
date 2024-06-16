@@ -3,7 +3,7 @@ name: Destroy {{ cookiecutter.environment }} {{ cookiecutter.project_name }}
 on:
   # push:
   #   branches:
-  #     - development
+  #     - production
   workflow_dispatch:
 
 env:
