@@ -59,12 +59,12 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
-        run: terraform plan -var-file=./vars/ ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}.tfvars -out=./tfplan
+        run: terraform plan -var-file=./vars/${{ '{{' }} env.TF_VAR_environment {{ '}}' }}.tfvars -out=./tfplan
         env:
           TF_VAR_environment: ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
 
       - name: Save tfplan to artifact store
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.3.3
         with:
           name: tfplan
           path: ./tfplan
