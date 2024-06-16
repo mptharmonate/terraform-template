@@ -10,3 +10,7 @@ output "ssm_parameter_names" {
     data.aws_ssm_parameter.info_alert_list.name
   ]
 }
+
+output "aws_region" {
+  value = var.region
+}

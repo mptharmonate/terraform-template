@@ -1,0 +1,8 @@
+{
+    "bucket_name": "sagemaker-ml-sandbox-development-tf-state",
+    "dynamodb_table": "sagemaker-ml-sandbox-development-tf-locks",
+    "environment": "development",
+    "jira_ticket": "NFI-xxxx",
+    "project_name": "sagemaker-ml-sandbox",
+    "region": "us-east-1"
+}

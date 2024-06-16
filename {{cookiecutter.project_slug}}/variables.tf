@@ -27,3 +27,8 @@ variable "test_email" {
   type        = string
   default     = "{{ cookiecutter.test_email }}"
 }
+
+variable "ignore_changes_on_destroy" {
+  description = "List of attributes to ignore changes"
+  type        = bool
+}
