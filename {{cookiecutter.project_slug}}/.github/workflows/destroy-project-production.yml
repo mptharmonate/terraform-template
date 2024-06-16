@@ -60,6 +60,6 @@ jobs:
 
       - name: Terraform Destroy
         working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
-        run: terraform apply -auto-approve
+        run: terraform destroy -var-file=./vars/${{ env.TF_VAR_environment }}.tfvars -auto-approve
         env:
           TF_VAR_environment: ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
