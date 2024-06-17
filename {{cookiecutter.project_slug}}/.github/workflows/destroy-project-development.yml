@@ -7,19 +7,19 @@ on:
   workflow_dispatch:
 
 env:
-  AWS_REGION: { { cookiecutter.region } }
-  TERRAFORM_VERSION: { { cookiecutter.terraform_version } }
+  AWS_REGION: {{ cookiecutter.region }}
+  TERRAFORM_VERSION: {{ cookiecutter.terraform_version }}
   WORKING_DIRECTORY: .
-  TF_VAR_environment: { { cookiecutter.environment } }
-  TF_VAR_project_name: { { cookiecutter.project_name } }
+  TF_VAR_environment: {{ cookiecutter.environment }}
+  TF_VAR_project_name: {{ cookiecutter.project_name }}
   ROLE_TO_ASSUME: ${{ '{{' }} secrets.SANDBOX_AWS_ROLE_TO_ASSUME {{ '}}' }}
-  PROJECT_NAME: { { cookiecutter.project_name } }
+  PROJECT_NAME: {{ cookiecutter.project_name }}
 
 jobs:
   destroy:
     name: Terraform Destroy
     runs-on: ubuntu-latest
-    environment: { { cookiecutter.environment } }
+    environment: {{ cookiecutter.environment }}
 
     permissions:
       id-token: write
