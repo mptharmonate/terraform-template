@@ -130,14 +130,9 @@ jobs:
         working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
         id: tf_outputs
         run: |
-          terraform output -json ssm_parameter_names > ssm_parameter_names.json
-          terraform output -json common_tags > common_tags.json
-
-      - name: Set environment variables for Terraform outputs
-        id: set_env_vars
-        run: |
-          echo "SSM_PARAMETER_NAMES=$(jq -c . ssm_parameter_names.json)" >> $GITHUB_ENV
-          echo "COMMON_TAGS=$(jq -c . common_tags.json)" >> $GITHUB_ENV
+          outputs=$(terraform output -json)
+          echo "SSM_PARAMETER_NAMES=$(echo $outputs | jq -c .ssm_parameter_names.value)" >> $GITHUB_ENV
+          echo "COMMON_TAGS=$(echo $outputs | jq -c .common_tags.value)" >> $GITHUB_ENV
 
       - name: Apply Tags to SSM Parameters
         run: |
@@ -151,7 +146,9 @@ jobs:
       - name: Add summary
         run: |
           echo "### Terraform Apply Summary" >> $GITHUB_STEP_SUMMARY
+          echo "SSM Parameter Names: $SSM_PARAMETER_NAMES" >> $GITHUB_STEP_SUMMARY
+          echo "Common Tags: $COMMON_TAGS" >> $GITHUB_STEP_SUMMARY
 
     outputs:
-      tf_outputs: ${{ '{{' }} steps.tf_outputs.outputs  {{ '}}' }}
-      set_env_vars: ${{ '{{' }} steps.set_env_vars.outputs  {{ '}}' }}
+      ssm_parameter_names: ${{ '{{' }} steps.tf_outputs.outputs.SSM_PARAMETER_NAMES {{ '}}' }}
+      common_tags: ${{ '{{' }} steps.tf_outputs.outputs.COMMON_TAGS {{ '}}' }}
