@@ -1,4 +1,4 @@
-name: Destroy {{ cookiecutter.environment }} {{ cookiecutter.project_name }}
+name: Destroy production {{ cookiecutter.project_name }}
 
 on:
   # push:
@@ -10,7 +10,7 @@ env:
   AWS_REGION: {{ cookiecutter.region }}
   TERRAFORM_VERSION: {{ cookiecutter.terraform_version }}
   WORKING_DIRECTORY: .
-  TF_VAR_environment: {{ cookiecutter.environment }}
+  TF_VAR_environment: production
   TF_VAR_project_name: {{ cookiecutter.project_name }}
   ROLE_TO_ASSUME: ${{ '{{' }} secrets.AWS_ROLE_TO_ASSUME {{ '}}' }}
   PROJECT_NAME: {{ cookiecutter.project_name }}
@@ -19,7 +19,7 @@ jobs:
   destroy:
     name: Terraform Destroy
     runs-on: ubuntu-latest
-    environment: {{ cookiecutter.environment }}
+    environment: production
 
     permissions:
       id-token: write

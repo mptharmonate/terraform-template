@@ -151,3 +151,7 @@ jobs:
       - name: Add summary
         run: |
           echo "### Terraform Apply Summary" >> $GITHUB_STEP_SUMMARY
+
+    outputs:
+      tf_outputs: ${{ '{{' }} steps.tf_outputs.outputs  {{ '}}' }}
+      set_env_vars: ${{ '{{' }} steps.set_env_vars.outputs  {{ '}}' }}
