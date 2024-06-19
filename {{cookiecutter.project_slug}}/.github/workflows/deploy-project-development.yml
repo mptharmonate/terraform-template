@@ -36,6 +36,9 @@ jobs:
           role-to-assume: ${{ '{{' }} env.ROLE_TO_ASSUME {{ '}}' }}
           aws-region: ${{ '{{' }} env.AWS_REGION {{ '}}' }}
 
+      - name: Validate variables
+        run: ./scripts/validate_vars.sh ./vars/${{ '{{' }} env.TF_VAR_environment {{ '}}' }}.tfvars
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3.1.1
         with:
