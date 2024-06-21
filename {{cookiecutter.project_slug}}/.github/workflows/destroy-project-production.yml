@@ -14,6 +14,8 @@ env:
   TF_VAR_project_name: {{ cookiecutter.project_name }}
   ROLE_TO_ASSUME: ${{ '{{' }} secrets.AWS_ROLE_TO_ASSUME {{ '}}' }}
   PROJECT_NAME: {{ cookiecutter.project_name }}
+  # FRONTEND_DIRECTORY: frontend/build
+  # UPDATE_MIME_TYPES_SCRIPT: ./scripts/update_mime_types.sh
 
 jobs:
   destroy:

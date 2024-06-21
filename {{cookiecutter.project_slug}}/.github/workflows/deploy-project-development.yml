@@ -14,6 +14,8 @@ env:
   TF_VAR_project_name: {{ cookiecutter.project_name }}
   ROLE_TO_ASSUME: ${{ '{{' }} secrets.SANDBOX_AWS_ROLE_TO_ASSUME {{ '}}' }}
   PROJECT_NAME: {{ cookiecutter.project_name }}
+  # FRONTEND_DIRECTORY: frontend/build
+  # UPDATE_MIME_TYPES_SCRIPT: ./scripts/update_mime_types.sh
 
 jobs:
   plan:
@@ -134,8 +136,21 @@ jobs:
         id: tf_outputs
         run: |
           outputs=$(terraform output -json)
-          echo "SSM_PARAMETER_NAMES=$(echo $outputs | jq -c .ssm_parameter_names.value)" >> $GITHUB_ENV
-          echo "COMMON_TAGS=$(echo $outputs | jq -c .common_tags.value)" >> $GITHUB_ENV
+          echo "SSM_PARAMETER_NAMES=$(echo $outputs | jq -c .ssm_parameter_names.value)" >> output_vars.txt
+          echo "COMMON_TAGS=$(echo $outputs | jq -c .common_tags.value)" >> output_vars.txt
+
+      - name: Set environment variables
+        working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
+        run: |
+          while IFS= read -r line; do echo "$line" >> $GITHUB_ENV; done < output_vars.txt
+
+      - name: Set job outputs
+        id: set-outputs
+        working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
+        run: |
+          while IFS= read -r line; do
+            echo "${line%%=*}=${line#*=}" >> $GITHUB_OUTPUT
+          done < output_vars.txt
 
       - name: Apply Tags to SSM Parameters
         run: |
@@ -153,5 +168,73 @@ jobs:
           echo "Common Tags: $COMMON_TAGS" >> $GITHUB_STEP_SUMMARY
 
     outputs:
-      ssm_parameter_names: ${{ '{{' }} steps.tf_outputs.outputs.SSM_PARAMETER_NAMES {{ '}}' }}
-      common_tags: ${{ '{{' }} steps.tf_outputs.outputs.COMMON_TAGS {{ '}}' }}
+      ssm_parameter_names: ${{ '{{' }} steps.set-outputs.outputs.SSM_PARAMETER_NAMES {{ '}}' }}
+      common_tags: ${{ '{{' }} steps.set-outputs.outputs.COMMON_TAGS {{ '}}' }}
+
+  # frontend:
+  #   name: Deploy Frontend
+  #   runs-on: ubuntu-latest
+  #   needs: apply
+  #   environment: {{ cookiecutter.environment }}
+
+  #   permissions:
+  #     id-token: write
+  #     contents: read
+  #     actions: write
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4.1.6
+
+  #     - name: Debug outputs in frontend job
+  #       run: |
+  #         echo "SSM_PARAMETER_NAMES: ${{ '{{' }} needs.apply.outputs.ssm_parameter_names {{ '}}' }}"
+  #         echo "COMMON_TAGS: ${{ '{{' }}needs.apply.outputs.common_tags {{ '}}' }}"
+
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v4.0.2
+  #       with:
+  #         node-version: "latest"
+
+  #     - name: Install dependencies
+  #       working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
+  #       run: |
+  #         cd frontend
+  #         npm install --loglevel=error --no-fund
+
+  #     - name: Build Frontend
+  #       working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
+  #       run: |
+  #         cd frontend
+  #         npm run build
+
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v4.0.2
+  #       with:
+  #         role-to-assume: ${{ '{{' }} env.ROLE_TO_ASSUME {{ '}}' }}
+  #         aws-region: ${{ '{{' }} env.AWS_REGION {{ '}}' }}
+
+  #     - name: Sync S3 bucket
+  #       working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
+  #       run: |
+  #         echo "Syncing build directory to S3 bucket: ${{ '{{' }} needs.apply.outputs.s3_bucket_name {{ '}}' }}"
+
+  #         # Sync the build directory to the S3 bucket and delete any files that are no longer in the build directory
+  #         aws s3 sync ${{ '{{' }} env.FRONTEND_DIRECTORY {{ '}}' }} s3://${{ '{{' }} needs.apply.outputs.s3_bucket_name {{ '}}' }} --delete
+
+  #     - name: Set mime types on s3 objects
+  #       working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
+  #       run: |
+  #         chmod +x ${{ '{{' }} env.UPDATE_MIME_TYPES_SCRIPT{{ '}}' }}
+  #         ${{ '{{' }} env.UPDATE_MIME_TYPES_SCRIPT{{ '}}' }} ${{ '{{' }} env.FRONTEND_DIRECTORY {{ '}}' }} ${{ '{{' }} needs.apply.outputs.s3_bucket_name {{ '}}' }}
+
+  #     - name: Invalidate CloudFront cache
+  #       run: |
+  #         aws cloudfront create-invalidation \
+  #           --distribution-id ${{ '{{' }} needs.apply.outputs.cloudfront_distribution_id {{ '}}' }} \
+  #           --paths "/*"
+
+  #     - name: Add summary
+  #       run: |
+  #         echo "### Frontend Deployment Summary" >> $GITHUB_STEP_SUMMARY
+  #         echo "Frontend Domain Name:${{ '{{' }} needs.apply.outputs.frontend_domain_name {{ '}}' }}}" >> $GITHUB_STEP_SUMMARY
