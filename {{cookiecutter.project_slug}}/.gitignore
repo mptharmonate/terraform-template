@@ -46,3 +46,4 @@ json-defs
 
 provider-local.tf
 .repo-to-text-settings.yaml
+.localawsenv
