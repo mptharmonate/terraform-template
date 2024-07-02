@@ -3,17 +3,17 @@ name: Deploy production {{ cookiecutter.project_name }}
 on:
   # push:
   #   branches:
-  #     - production
+  #     - main
   workflow_dispatch:
 
 env:
-  AWS_REGION: {{ cookiecutter.region }}
-  TERRAFORM_VERSION: {{ cookiecutter.terraform_version }}
+  AWS_REGION: { { cookiecutter.region } }
+  TERRAFORM_VERSION: { { cookiecutter.terraform_version } }
   WORKING_DIRECTORY: .
-  TF_VAR_environment: production
-  TF_VAR_project_name: {{ cookiecutter.project_name }}
-  ROLE_TO_ASSUME: ${{ '{{' }} secrets.AWS_ROLE_TO_ASSUME {{ '}}' }}
-  PROJECT_NAME: {{ cookiecutter.project_name }}
+  TF_VAR_environment: { { cookiecutter.environment } }
+  TF_VAR_project_name: { { cookiecutter.project_name } }
+  ROLE_TO_ASSUME: ${{ '{{' }} secrets.SANDBOX_AWS_ROLE_TO_ASSUME {{ '}}' }}
+  PROJECT_NAME: { { cookiecutter.project_name } }
   # FRONTEND_DIRECTORY: frontend/build
   # UPDATE_MIME_TYPES_SCRIPT: ./scripts/update_mime_types.sh
 
@@ -21,7 +21,7 @@ jobs:
   plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
-    environment: production
+    environment: { { cookiecutter.environment } }
 
     permissions:
       id-token: write
@@ -59,13 +59,13 @@ jobs:
 
       - name: Select Terraform Workspace
         working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
-        run: terraform workspace select ${{ '{{' }} env.TF_VAR_environment {{ '}}' }} || terraform workspace new ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
+        run: terraform workspace select -or-create=true ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
         env:
           TF_VAR_environment: ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
 
       - name: Terraform Plan
         working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
-        run: terraform plan -var-file=./vars/${{ '{{' }} env.TF_VAR_environment {{ '}}' }}.tfvars -out=./tfplan
+        run: terraform plan -var-file=./vars/${{ '{{' }} env.TF_VAR_environment {{ '}}' }}.tfvars -out=./tfplan -lock=false
         env:
           TF_VAR_environment: ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
 
@@ -80,7 +80,7 @@ jobs:
     name: Terraform Apply
     runs-on: ubuntu-latest
     needs: plan
-    environment: production
+    environment: { { cookiecutter.environment } }
 
     permissions:
       id-token: write
@@ -121,13 +121,16 @@ jobs:
 
       - name: Select Terraform Workspace
         working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
-        run: terraform workspace select ${{ '{{' }} env.TF_VAR_environment {{ '}}' }} || terraform workspace new ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
+        run: terraform workspace select -or-create=true ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
         env:
           TF_VAR_environment: ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
 
       - name: Terraform Apply
         working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
-        run: terraform apply ./tfplan
+        run: |
+          terraform apply ./tfplan
+          LOCK_ID=$(terraform state show | grep 'lock_id' | awk '{print $2}')
+          echo "LOCK_ID=$LOCK_ID" >> $GITHUB_ENV
         env:
           TF_VAR_environment: ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
 
@@ -170,6 +173,55 @@ jobs:
     outputs:
       ssm_parameter_names: ${{ '{{' }} steps.set-outputs.outputs.SSM_PARAMETER_NAMES {{ '}}' }}
       common_tags: ${{ '{{' }} steps.set-outputs.outputs.COMMON_TAGS {{ '}}' }}
+
+  cleanup:
+    name: Cancel Cleanup
+    runs-on: ubuntu-latest
+    needs: apply
+    environment: { { cookiecutter.environment } }
+    if: ${{ '{{' }}  github.event.workflow_run.conclusion == 'cancelled' {{ '}}' }}
+
+    permissions:
+      id-token: write
+      contents: read
+      actions: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          role-to-assume: ${{ '{{' }} env.ROLE_TO_ASSUME {{ '}}' }}
+          aws-region: ${{ '{{' }} env.AWS_REGION {{ '}}' }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3.1.1
+        with:
+          terraform_version: ${{ '{{' }} env.TERRAFORM_VERSION {{ '}}' }}
+
+      - name: Generate backend configuration
+        run: ./scripts/generate_backend_config.sh
+        env:
+          TF_VAR_environment: ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
+
+      - name: Terraform Init
+        working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
+        run: terraform init
+        env:
+          TF_VAR_environment: ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
+
+      - name: Select Terraform Workspace
+        working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
+        run: terraform workspace select -or-create=true ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
+        env:
+          TF_VAR_environment: ${{ '{{' }} env.TF_VAR_environment {{ '}}' }}
+
+      - name: Unlock Terraform Remote State becaused workflow was cancelled
+        working-directory: ${{ '{{' }} env.WORKING_DIRECTORY {{ '}}' }}
+        run: |
+          terraform force-unlock -force ${{ '{{' }} env.LOCK_ID {{ '}}' }}
 
   # frontend:
   #   name: Deploy Frontend

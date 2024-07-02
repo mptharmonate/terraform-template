@@ -1,22 +1,16 @@
 #!/bin/bash
 
-# Ensure jq is installed
-if ! command -v jq &> /dev/null; then
-    echo "jq is required but not installed. Please install jq and try again."
-    exit 1
-fi
-
-# Ensure cookiecutter is installed
-if ! command -v cookiecutter &> /dev/null; then
-    echo "cookiecutter is required but not installed. Please install cookiecutter and try again."
-    exit 1
-fi
-
 # Check if the argument is provided
 if [ $# -eq 0 ]; then
     echo "Usage: $0 json-defs/backend-project-name.json"
     exit 1
 fi
+
+# Insert shared functions here
+source ./scripts/shared_code.sh
+
+# Check if required commands are installed
+check_commands jq aws terraform
 
 # Assign the first argument to the variable
 BACKEND_PROJECT_DEF_FILE=$1
