@@ -7,13 +7,13 @@ on:
   workflow_dispatch:
 
 env:
-  AWS_REGION: { { cookiecutter.region } }
-  TERRAFORM_VERSION: { { cookiecutter.terraform_version } }
+  AWS_REGION: {{ cookiecutter.region }}
+  TERRAFORM_VERSION: {{ cookiecutter.terraform_version }}
   WORKING_DIRECTORY: .
   TF_VAR_environment: production
-  TF_VAR_project_name: { { cookiecutter.project_name } }
+  TF_VAR_project_name: {{ cookiecutter.project_name }}
   ROLE_TO_ASSUME: ${{ '{{' }} secrets.AWS_ROLE_TO_ASSUME {{ '}}' }}
-  PROJECT_NAME: { { cookiecutter.project_name } }
+  PROJECT_NAME: {{ cookiecutter.project_name }}
   # FRONTEND_DIRECTORY: frontend/build
   # UPDATE_MIME_TYPES_SCRIPT: ./scripts/update_mime_types.sh
 
@@ -70,7 +70,7 @@ jobs:
     name: Cancel Cleanup
     runs-on: ubuntu-latest
     needs: apply
-    environment: { { cookiecutter.environment } }
+    environment: {{ cookiecutter.environment }}
     if: ${{ '{{' }}  github.event.workflow_run.conclusion == 'cancelled' {{ '}}' }}
 
     permissions:
