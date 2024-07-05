@@ -69,8 +69,8 @@ jobs:
   cleanup:
     name: Cancel Cleanup
     runs-on: ubuntu-latest
-    needs: apply
-    environment: { { cookiecutter.environment } }
+    needs: destroy
+    environment: {{ cookiecutter.environment }}
     if: ${{ '{{' }}  github.event.workflow_run.conclusion == 'cancelled' {{ '}}' }}
 
     permissions:
