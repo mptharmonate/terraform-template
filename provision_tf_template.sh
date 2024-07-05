@@ -79,7 +79,7 @@ OUTPUT_DIR="/Users/mpt/work/code"
 cd $OUTPUT_DIR/$PROJECT_NAME
 
 # Create a .localawsenv with AWS_PROFILE and AWS_REGION
-echo "AWS_PROFILE=$PROJECT_NAME" > .localawsenv
+echo "AWS_PROFILE=$AWS_PROFILE" > .localawsenv
 echo "AWS_REGION=$REGION" >> .localawsenv
 
 # Intialize Terraform with the remote backend
