@@ -50,9 +50,18 @@ read -p "Enter initial commit message [$DEFAULT_INITIAL_COMMIT_MESSAGE]: " INITI
 INITIAL_COMMIT_MESSAGE=${INITIAL_COMMIT_MESSAGE:-$DEFAULT_INITIAL_COMMIT_MESSAGE}
 
 # Prompt for Terraform Version
-DEFAULT_TERRAFORM_VERSION="1.8.5"
+DEFAULT_TERRAFORM_VERSION="1.9.2"
 read -p "Enter Terraform Version [$DEFAULT_TERRAFORM_VERSION]: " TERRAFORM_VERSION
 TERRAFORM_VERSION=${TERRAFORM_VERSION:-$DEFAULT_TERRAFORM_VERSION}
+
+# Prompt for Info and Error Alert Lists
+DEFAULT_INFO_ALERT_LIST="mtuszynski+infoalert@harmonate.com"
+read -p "Enter Info Alert List (comma delimited) [$DEFAULT_INFO_ALERT_LIST]: " INFO_ALERT_LIST
+INFO_ALERT_LIST=${INFO_ALERT_LIST:-$DEFAULT_INFO_ALERT_LIST}
+
+DEFAULT_ERROR_ALERT_LIST="mtuszynski+erroralert@harmonate.com"
+read -p "Enter Error Alert List (comma delimited) [$DEFAULT_ERROR_ALERT_LIST]: " ERROR_ALERT_LIST
+ERROR_ALERT_LIST=${ERROR_ALERT_LIST:-$DEFAULT_ERROR_ALERT_LIST}
 
 # Define the template directory and the target output directory
 TEMPLATE_DIR="/Users/mpt/work/code/terraform-template"
@@ -73,6 +82,8 @@ OUTPUT_DIR="/Users/mpt/work/code"
     -f repo_name=$PROJECT_NAME \
     -f initial_commit_message="$INITIAL_COMMIT_MESSAGE" \
     -f terraform_version=$TERRAFORM_VERSION \
+    -f info_alert_list=$INFO_ALERT_LIST \
+    -f error_alert_list=$ERROR_ALERT_LIST \
     -o $OUTPUT_DIR
 
 # Change to the project directory

@@ -1,14 +1,18 @@
 # Define the current AWS caller identity
 data "aws_caller_identity" "current" {}
 
-# Retrieve the SSM parameter for the error alert list
-data "aws_ssm_parameter" "error_alert_list" {
-  name = "/sns/lists/${local.environment}/error_alert_list"
+resource "aws_ssm_parameter" "error_alert_list" {
+  name        = "/sns/lists/${local.environment}/${var.project_name}/error_alert_list"
+  type        = "String"
+  value       = var.error_alert_list
+  description = "SSM parameter for error alert list"
 }
 
-# Retrieve the SSM parameter for the info alert list
-data "aws_ssm_parameter" "info_alert_list" {
-  name = "/sns/lists/${local.environment}/info_alert_list"
+resource "aws_ssm_parameter" "info_alert_list" {
+  name        = "/sns/lists/${local.environment}/${var.project_name}/info_alert_list"
+  type        = "String"
+  value       = var.info_alert_list
+  description = "SSM parameter for info alert list"
 }
 
 locals {
@@ -17,8 +21,8 @@ locals {
     Environment = local.environment
     JiraTicket  = var.jira_ticket
   }
-  error_alert_list = nonsensitive(split(",", data.aws_ssm_parameter.error_alert_list.value))
-  info_alert_list  = nonsensitive(split(",", data.aws_ssm_parameter.info_alert_list.value))
+  error_alert_list = nonsensitive(split(",", aws_ssm_parameter.error_alert_list.value))
+  info_alert_list  = nonsensitive(split(",", aws_ssm_parameter.info_alert_list.value))
   test_email       = var.test_email
   environment      = terraform.workspace
   region           = var.region

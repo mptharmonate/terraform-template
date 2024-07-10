@@ -1,6 +1,6 @@
 {
   "project_name": "example_project",
-  "project_slug": "example_slug}",
+  "project_slug": "example_slug",
   "region": "us-east-1",
   "bucket_name": "your-terraform-state-bucket",
   "dynamodb_table": "your-lock-table",
@@ -12,5 +12,13 @@
   "create_github_repo": "yes",
   "default_branch": "main",
   "initial_commit_message": "Initial commit",
-  "terraform_version": "1.8.5"
+  "terraform_version": "1.9.2",
+  "info_alert_list": [
+    "you@email.com",
+    "other@email.com"
+  ],
+  "error_alert_list": [
+    "you@email.com",
+    "other@email.com"
+  ]
 }

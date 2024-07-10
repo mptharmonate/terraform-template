@@ -3,6 +3,16 @@ variable "project_name" {
   type        = string
 }
 
+variable "error_alert_list" {
+  description = "List of emails to send error alerts"
+  type        = string
+}
+
+variable "info_alert_list" {
+  description = "List of emails to send info alerts"
+  type        = string
+}
+
 variable "region" {
   description = "AWS Region"
   type        = string
