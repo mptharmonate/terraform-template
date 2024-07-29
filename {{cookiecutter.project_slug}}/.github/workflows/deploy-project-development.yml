@@ -139,7 +139,6 @@ jobs:
         id: tf_outputs
         run: |
           outputs=$(terraform output -json)
-          echo "SSM_PARAMETER_NAMES=$(echo $outputs | jq -c .ssm_parameter_names.value)" >> output_vars.txt
           echo "COMMON_TAGS=$(echo $outputs | jq -c .common_tags.value)" >> output_vars.txt
 
       - name: Set environment variables
@@ -155,23 +154,12 @@ jobs:
             echo "${line%%=*}=${line#*=}" >> $GITHUB_OUTPUT
           done < output_vars.txt
 
-      - name: Apply Tags to SSM Parameters
-        run: |
-          parameter_names=$(echo "$SSM_PARAMETER_NAMES" | jq -r '.[]')
-          tags=$(echo "$COMMON_TAGS" | jq -r 'to_entries | map("Key=\(.key),Value=\(.value|tostring)") | join(" ")')
-
-          for parameter_name in $parameter_names; do
-            aws ssm add-tags-to-resource --resource-type Parameter --resource-id $parameter_name --tags $tags
-          done
-
       - name: Add summary
         run: |
           echo "### Terraform Apply Summary" >> $GITHUB_STEP_SUMMARY
-          echo "SSM Parameter Names: $SSM_PARAMETER_NAMES" >> $GITHUB_STEP_SUMMARY
           echo "Common Tags: $COMMON_TAGS" >> $GITHUB_STEP_SUMMARY
 
     outputs:
-      ssm_parameter_names: ${{ '{{' }} steps.set-outputs.outputs.SSM_PARAMETER_NAMES {{ '}}' }}
       common_tags: ${{ '{{' }} steps.set-outputs.outputs.COMMON_TAGS {{ '}}' }}
 
   cleanup:
@@ -240,7 +228,6 @@ jobs:
 
   #     - name: Debug outputs in frontend job
   #       run: |
-  #         echo "SSM_PARAMETER_NAMES: ${{ '{{' }} needs.apply.outputs.ssm_parameter_names {{ '}}' }}"
   #         echo "COMMON_TAGS: ${{ '{{' }}needs.apply.outputs.common_tags {{ '}}' }}"
 
   #     - name: Set up Node.js

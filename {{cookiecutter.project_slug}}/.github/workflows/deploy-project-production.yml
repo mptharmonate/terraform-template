@@ -155,15 +155,6 @@ jobs:
             echo "${line%%=*}=${line#*=}" >> $GITHUB_OUTPUT
           done < output_vars.txt
 
-      - name: Apply Tags to SSM Parameters
-        run: |
-          parameter_names=$(echo "$SSM_PARAMETER_NAMES" | jq -r '.[]')
-          tags=$(echo "$COMMON_TAGS" | jq -r 'to_entries | map("Key=\(.key),Value=\(.value|tostring)") | join(" ")')
-
-          for parameter_name in $parameter_names; do
-            aws ssm add-tags-to-resource --resource-type Parameter --resource-id $parameter_name --tags $tags
-          done
-
       - name: Add summary
         run: |
           echo "### Terraform Apply Summary" >> $GITHUB_STEP_SUMMARY

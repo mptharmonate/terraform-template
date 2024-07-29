@@ -12,13 +12,7 @@
   "create_github_repo": "yes",
   "default_branch": "main",
   "initial_commit_message": "Initial commit",
-  "terraform_version": "1.9.2",
-  "info_alert_list": [
-    "you@email.com",
-    "other@email.com"
-  ],
-  "error_alert_list": [
-    "you@email.com",
-    "other@email.com"
-  ]
+  "terraform_version": "1.9.3",
+  "info_alert_list": "mtuszynski+test1@harmonate.com,mtuszynski+test2@harmonate.com",
+  "error_alert_list": "mtuszynski+test1@harmonate.com,mtuszynski+test2@harmonate.com"
 }
